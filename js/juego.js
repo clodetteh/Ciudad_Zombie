@@ -8,6 +8,7 @@ texto COMPLETAR que deben completarse segun lo indique la consigna.
 El objeto Juego contiene mucho codigo. Tomate tu tiempo para leerlo tranquilo
 y entender que es lo que hace en cada una de sus partes. */
 
+
 var Juego = {
   // Aca se configura el tamanio del canvas del juego
   anchoCanvas: 961,
@@ -16,14 +17,14 @@ var Juego = {
   vidasInicial: Jugador.vidas,
   // Indica si el jugador gano
   ganador: false,
+  puedeMoverse: true,
 
   obstaculosCarretera: [
     /*Aca se van a agregar los obstaculos visibles. Tenemos una valla horizontal
     de ejemplo, pero podras agregar muchos mas. */
     new Obstaculo('imagenes/valla_horizontal.png', 70, 430, 30, 30, 1),
-    new Obstaculo('imagenes/valla_horizontal.png', 720, 90, 30, 30, 1),
-    new Obstaculo('imagenes/valla_horizontal.png', 750, 90, 30, 30, 1),
-    new Obstaculo('imagenes/valla_horizontal.png', 100, 430, 30, 30, 1),
+    new Obstaculo('imagenes/valla_horizontal.png', 790, 80, 30, 30, 1),
+    new Obstaculo('imagenes/valla_horizontal.png', 820, 80, 30, 30, 1),
     new Obstaculo('imagenes/valla_horizontal.png', 100, 430, 30, 30, 1),
     new Obstaculo('imagenes/valla_vertical.png', 450, 480, 30, 30, 1),
     new Obstaculo('imagenes/valla_vertical.png', 450, 450, 30, 30, 1),
@@ -62,9 +63,9 @@ var Juego = {
     new ZombieCaminante('imagenes/zombie3.png', 950, 560, 10, 10, 2, {desdeX : 0, hastaX : 961, desdeY : 0, hastaY : 577}),
     new ZombieCaminante('imagenes/zombie4.png', 950, 10, 10, 10, 1, {desdeX : 0, hastaX : 961, desdeY : 0, hastaY : 577}),
     new ZombieCaminante('imagenes/zombie1.png', 430, 233, 10, 10, 2, {desdeX : 0, hastaX : 961, desdeY : 0, hastaY : 577}),
-    //new ZombieConductor('imagenes/tren_horizontal.png', 400, 322, 90, 30, 3, {desdeX : 0, hastaX : 961, desdeY : 0, hastaY : 577}, 'h'),
-    //new ZombieConductor('imagenes/tren_vertical.png', 644, 0, 30, 90, 3, {desdeX : 0, hastaX : 961, desdeY : 0, hastaY : 577}, 'v'),
-    //new ZombieConductor('imagenes/tren_vertical.png', 678, 0, 30, 90, 3, {desdeX : 0, hastaX : 961, desdeY : 0, hastaY : 577}, 'v')
+    new ZombieConductor('imagenes/tren_horizontal.png', 400, 322, 90, 30, 3, {desdeX : 0, hastaX : 961, desdeY : 0, hastaY : 577}, 'h'),
+    new ZombieConductor('imagenes/tren_vertical.png', 644, 0, 30, 90, 3, {desdeX : 0, hastaX : 961, desdeY : 0, hastaY : 577}, 'v'),
+    new ZombieConductor('imagenes/tren_vertical.png', 678, 0, 30, 90, 3, {desdeX : 0, hastaX : 961, desdeY : 0, hastaY : 577}, 'v')
   ]
 
 }
@@ -105,6 +106,7 @@ Juego.obstaculos = function() {
 Juego.comenzar = function() {
   // Inicializar el canvas del juego
   Dibujante.inicializarCanvas(this.anchoCanvas, this.altoCanvas);
+  this.puedeMoverse = true;
   /* El bucle principal del juego se llamara continuamente para actualizar
   los movimientos y el pintado de la pantalla. Sera el encargado de calcular los
   ataques, colisiones, etc*/
@@ -207,11 +209,12 @@ se ven las colisiones con los obstaculos. En este caso sera con los zombies. */
 Juego.calcularAtaques = function() {
   this.enemigos.forEach(function(enemigo) {
     if (this.intersecan(enemigo, this.jugador, this.jugador.x, this.jugador.y)) {
-      /* Si el enemigo colisiona debe empezar su ataque
-      COMPLETAR */
+      // Si el enemigo colisiona debe empezar su ataque
+      if(enemigo.comenzarAtaque(this.jugador)){
+      enemigo.atacar(this.jugador);}
     } else {
-      /* Sino, debe dejar de atacar
-      COMPLETAR */
+      //Sino, debe dejar de atacar
+      enemigo.dejarDeAtacar();
     }
   }, this);
 };
@@ -221,14 +224,14 @@ Juego.calcularAtaques = function() {
 /* Aca se chequea si el jugador se peude mover a la posicion destino.
  Es decir, que no haya obstaculos que se interpongan. De ser asi, no podra moverse */
 Juego.chequearColisiones = function(x, y) {
-  var puedeMoverse = true
+  //this.puedeMoverse = true
   this.obstaculos().forEach(function(obstaculo) {
     if (this.intersecan(obstaculo, this.jugador, x, y)) {
       obstaculo.chocar(this.jugador);
-      puedeMoverse = false
+      this.puedeMoverse = false
     }
-  }, this)
-  return puedeMoverse
+  }, this) 
+  return this.puedeMoverse;
 };
 
 /* Este metodo chequea si los elementos 1 y 2 si cruzan en x e y
@@ -250,6 +253,7 @@ Juego.intersecan = function(elemento1, elemento2, x, y) {
 Juego.dibujarFondo = function() {
   // Si se termino el juego hay que mostrar el mensaje de game over de fondo
   if (this.terminoJuego()) {
+    this.puedeMoverse = false;
     Dibujante.dibujarImagen('imagenes/mensaje_gameover.png', 0, 5, this.anchoCanvas, this.altoCanvas);
     document.getElementById('reiniciar').style.visibility = 'visible';
   }

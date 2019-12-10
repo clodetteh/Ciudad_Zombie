@@ -16,7 +16,7 @@ ZombieConductor.prototype = Object.create(Enemigo.prototype);
 ZombieConductor.prototype.constructor = ZombieConductor;
 
 /* Completar metodos para el movimiento y el ataque */
-ZombieCaminante.prototype.mover = function(){
+ZombieConductor.prototype.mover = function(){
   if(this.direccion == 'h'){
     if ((this.x < this.rangoMov.desdeX) || (this.x > this.rangoMov.hastaX)){
       this.velocidad *= -1;
@@ -29,3 +29,7 @@ ZombieCaminante.prototype.mover = function(){
   }
   this.y += this.velocidad;
 }};
+
+ZombieConductor.prototype.atacar = function(jugador) {
+  jugador.perderVidas(jugador.vidas);
+};

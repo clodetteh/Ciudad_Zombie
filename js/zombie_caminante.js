@@ -14,7 +14,6 @@ ZombieCaminante.prototype = Object.create(Enemigo.prototype);
 ZombieCaminante.prototype.constructor = ZombieCaminante;
 
 ZombieCaminante.prototype.mover = function() {
-  console.log("moviendo", this);
   /* Los movimientos estan basados en un numero aleatorio
   La direccion horizontal es siempre la misma y va ondulando verticalmente.
   Esto hasta llegar a sus limites, donde se invierte su direccion horizontal */
@@ -41,8 +40,8 @@ ZombieCaminante.prototype.mover = function() {
 
 /* El ataque lo toma de su prototipo Enemigo que ya implementa un metodo atacar
 haciendole perder 1 vida al jugador. Si se quiere modificar el valor de ataque
-del zombie caminante habra que reimplementar este metodo desde el objeto ZombieCaminante
+del zombie caminante habra que reimplementar este metodo desde el objeto ZombieCaminante*/
 
-ZombieConductor.prototype.atacar = function(jugador) {
-  ...
-}*/
+ZombieCaminante.prototype.atacar = function(jugador){
+  jugador.perderVidas(5);
+};
