@@ -43,3 +43,7 @@ dejarDeAtacar para modificar la propiedad atacando*/
 Enemigo.prototype.dejarDeAtacar = function () {
   this.atacando = false;
 }
+
+
+
+
