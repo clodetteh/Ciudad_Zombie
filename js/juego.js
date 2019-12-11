@@ -106,7 +106,7 @@ Juego.obstaculos = function() {
 Juego.comenzar = function() {
   // Inicializar el canvas del juego
   Dibujante.inicializarCanvas(this.anchoCanvas, this.altoCanvas);
-  this.puedeMoverse = true;
+  //this.puedeMoverse = true;
   /* El bucle principal del juego se llamara continuamente para actualizar
   los movimientos y el pintado de la pantalla. Sera el encargado de calcular los
   ataques, colisiones, etc*/
@@ -161,6 +161,9 @@ Juego.dibujar = function() {
   Dibujante.borrarAreaDeJuego();
   //Se pinta la imagen de fondo segun el estado del juego
   this.dibujarFondo();
+  if(this.terminoJuego() || this.ganoJuego()){
+    return;
+  }
   /* Aca hay que agregar la logica para poder dibujar al jugador principal
   utilizando al dibujante y los metodos que nos brinda.
   "Dibujante dibuja al jugador" */
@@ -224,14 +227,17 @@ Juego.calcularAtaques = function() {
 /* Aca se chequea si el jugador se peude mover a la posicion destino.
  Es decir, que no haya obstaculos que se interpongan. De ser asi, no podra moverse */
 Juego.chequearColisiones = function(x, y) {
-  //this.puedeMoverse = true
+  this.puedeMoverse = true
+  //var puedeMoverse = true;
   this.obstaculos().forEach(function(obstaculo) {
     if (this.intersecan(obstaculo, this.jugador, x, y)) {
       obstaculo.chocar(this.jugador);
       this.puedeMoverse = false
+      //puedeMoverse = false;
     }
   }, this) 
   return this.puedeMoverse;
+  //return puedeMoverse;
 };
 
 /* Este metodo chequea si los elementos 1 y 2 si cruzan en x e y
@@ -253,9 +259,9 @@ Juego.intersecan = function(elemento1, elemento2, x, y) {
 Juego.dibujarFondo = function() {
   // Si se termino el juego hay que mostrar el mensaje de game over de fondo
   if (this.terminoJuego()) {
-    this.puedeMoverse = false;
     Dibujante.dibujarImagen('imagenes/mensaje_gameover.png', 0, 5, this.anchoCanvas, this.altoCanvas);
     document.getElementById('reiniciar').style.visibility = 'visible';
+    //this.puedeMoverse = false;
   }
 
   // Si se gano el juego hay que mostrar el mensaje de ganoJuego de fondo
